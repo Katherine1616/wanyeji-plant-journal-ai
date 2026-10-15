@@ -1,0 +1,152 @@
+/* 叶子状态与浇水动效 —— 只属于植物插画这个组件 */
+@keyframes breathe {
+  50% {
+    transform: scale(1.012);
+  }
+}
+
+@keyframes spring {
+  0% {
+    transform: scaleY(0.88) rotate(-2deg);
+  }
+  55% {
+    transform: scaleY(1.03) rotate(1deg);
+  }
+  78% {
+    transform: scaleY(0.99);
+  }
+  100% {
+    transform: none;
+  }
+}
+
+@keyframes drop-fall {
+  0% {
+    opacity: 0;
+    transform: translateY(-14px) scale(0.8);
+  }
+  15% {
+    opacity: 0.85;
+  }
+  85% {
+    opacity: 0.85;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(115%) scale(0.9);
+  }
+}
+
+@keyframes ripple-out {
+  0% {
+    opacity: 0;
+    transform: scale(0.2);
+  }
+  30% {
+    opacity: 0.55;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.5);
+  }
+}
+
+.plate {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.plate::after {
+  content: "";
+  position: absolute;
+  bottom: 14%;
+  width: 70%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--line-color, #d2d2c3), transparent);
+  z-index: -1;
+}
+
+.image {
+  height: 92%;
+  width: 92%;
+  object-fit: contain;
+  transform-origin: 50% 85%;
+  transition:
+    filter 0.4s ease-out,
+    transform 0.8s cubic-bezier(0.22, 1.5, 0.5, 1);
+  filter: saturate(0.85);
+}
+
+.fresh .image {
+  animation: breathe 4s ease-in-out infinite;
+  animation-delay: var(--breathe-delay, 0s);
+}
+
+.normal .image {
+  transform: none;
+}
+
+.thirsty .image {
+  filter: saturate(0.8);
+  transform: scaleY(0.94) skewX(1deg);
+}
+
+.wilted .image {
+  filter: saturate(0.6) sepia(0.15);
+  transform: scaleY(0.88) skewX(-3deg) rotate(-2deg);
+}
+
+.springing .image {
+  animation: spring 0.95s cubic-bezier(0.22, 1.2, 0.36, 1) both;
+}
+
+.drops {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.drop {
+  position: absolute;
+  top: 2%;
+  width: 7px;
+  height: 10px;
+  border-radius: 60% 60% 60% 60% / 70% 70% 40% 40%;
+  background: var(--water-color, #6c9ab5);
+  opacity: 0;
+  animation: drop-fall 0.9s ease-in forwards;
+}
+
+.ripple {
+  position: absolute;
+  bottom: 6%;
+  left: 50%;
+  width: 74%;
+  aspect-ratio: 1;
+  max-width: 220px;
+  border-radius: 999px;
+  border: 1px solid var(--water-color, #6c9ab5);
+  transform: translateX(-50%) scale(0.2);
+  animation: ripple-out 1s ease-out forwards;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .image,
+  .fresh .image,
+  .springing .image {
+    animation: none !important;
+  }
+  .drops,
+  .ripple {
+    display: none;
+  }
+  .thirsty .image,
+  .wilted .image {
+    transform: none;
+  }
+}

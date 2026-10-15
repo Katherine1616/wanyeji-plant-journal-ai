@@ -1,0 +1,181 @@
+/* 日卡片：三种状态、翻转与完成印章 */
+.rail {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  padding: 6px 0 18px;
+}
+
+.rail::-webkit-scrollbar {
+  display: none;
+}
+
+.slot {
+  flex: 0 0 82%;
+  scroll-snap-align: center;
+  transition:
+    transform 0.35s ease-out,
+    opacity 0.35s ease-out;
+}
+
+.slot[data-active="false"] {
+  transform: scale(0.96) translateY(6px);
+  opacity: 0.9;
+}
+
+.slot[data-side="past"] {
+  transform: scale(0.96) translateX(-10px);
+}
+
+.slot[data-side="future"] {
+  transform: scale(0.96) translateX(10px);
+}
+
+@media (min-width: 768px) {
+  .slot {
+    flex-basis: 44%;
+  }
+}
+
+@media (min-width: 1200px) {
+  .slot {
+    flex-basis: 30%;
+  }
+}
+
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 420px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: var(--card);
+  padding: 16px 16px 14px;
+  overflow: hidden;
+}
+
+.today {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--primary) 35%, transparent);
+}
+
+.pastCard {
+  background: linear-gradient(180deg, rgba(226, 220, 200, 0.5), rgba(251, 248, 241, 0.9));
+}
+
+.futureCard {
+  background: color-mix(in oklab, var(--card) 92%, transparent);
+}
+
+.flip {
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  position: relative;
+  min-height: 112px;
+}
+
+.flip.flipped {
+  transform: rotateY(180deg);
+}
+
+.face {
+  position: relative;
+  backface-visibility: hidden;
+  border-radius: 12px;
+}
+
+.back {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  transform: rotateY(180deg);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  border: 1px solid var(--border);
+  background: color-mix(in oklab, var(--secondary) 70%, transparent);
+  text-align: center;
+}
+
+.stamp {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid var(--primary);
+  border-radius: 999px;
+  color: var(--primary);
+  font-size: 0.6rem;
+  letter-spacing: 0.08em;
+}
+
+@keyframes stamp-down {
+  0% {
+    opacity: 0;
+    transform: scale(2.4) rotate(-8deg);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(0.94) rotate(-4deg);
+  }
+  80% {
+    transform: scale(1.04) rotate(-5deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(-5deg);
+  }
+}
+
+.dayStamp {
+  position: absolute;
+  top: 42%;
+  left: 50%;
+  translate: -50% -50%;
+  border: 2px solid var(--primary);
+  border-radius: 10px;
+  padding: 6px 12px;
+  color: var(--primary);
+  background: color-mix(in oklab, var(--card) 82%, transparent);
+  font-size: 0.85rem;
+  letter-spacing: 0.12em;
+  animation: stamp-down 0.55s cubic-bezier(0.3, 1.4, 0.5, 1) both;
+  pointer-events: none;
+}
+
+.missed .miniImage {
+  filter: saturate(0.55) sepia(0.1);
+}
+
+.missedBadge {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--russet) 16%, transparent);
+  color: var(--russet);
+  font-size: 0.6rem;
+  padding: 1px 6px;
+}
+
+.plannedCard {
+  border-style: dashed;
+  opacity: 0.72;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slot,
+  .flip {
+    transition: none;
+  }
+  .dayStamp {
+    animation: none;
+  }
+}
